@@ -1,0 +1,512 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Video Cleaner Pro - Remove Watermarks from Videos</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            line-height: 1.6;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+        header {
+            background: #f8f9fa;
+            padding: 20px 0;
+        }
+        .navbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .logo a {
+            text-decoration: none;
+            color: inherit;
+            font-weight: bold;
+            font-size: 1.3em;
+        }
+        .nav-links {
+            display: flex;
+            gap: 20px;
+        }
+        .nav-links a {
+            text-decoration: none;
+            color: #333;
+        }
+        .btn {
+            display: inline-block;
+            padding: 12px 24px;
+            background: #007bff;
+            color: white;
+            text-decoration: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        .hero {
+            text-align: center;
+            padding: 60px 0;
+            background: #e9ecef;
+        }
+        section {
+            margin-bottom: 50px;
+        }
+        .features, .pricing {
+            padding: 60px 0;
+        }
+        .feature-grid, .pricing-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+            margin-top: 40px;
+        }
+        .feature-item, .pricing-item {
+            background: #f8f9fa;
+            padding: 30px;
+            border-radius: 8px;
+        }
+        .steps {
+            display: flex;
+            flex-direction: row;
+            gap: 25px;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin-top: 30px;
+        }
+        .step {
+            background: #fff;
+            padding: 20px;
+            border-radius: 7px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+            width: 220px;
+        }
+        .step-number {
+            background: #007bff;
+            color: #fff;
+            font-size: 1.2em;
+            border-radius: 50%;
+            width: 36px;
+            height: 36px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 12px;
+        }
+
+        /* FAQ Accordion */
+        .faq-list {
+            max-width: 700px;
+            margin: 40px auto 0 auto;
+        }
+        .faq-item {
+            background: #f8f9fa;
+            margin-bottom: 12px;
+            border-radius: 6px;
+            box-shadow: 0 1px 2px rgba(0,0,0,0.03);
+        }
+        .faq-question {
+            cursor: pointer;
+            padding: 18px 24px;
+            margin: 0;
+            font-weight: 500;
+            border: none;
+            background: none;
+            width: 100%;
+            font-size: 1.03em;
+            text-align: left;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        .faq-answer {
+            padding: 0 24px 18px 24px;
+            display: none;
+        }
+        .faq-item.active .faq-answer {
+            display: block;
+        }
+        .faq-chevron {
+            transition: transform 0.2s;
+        }
+        .faq-item.active .faq-chevron {
+            transform: rotate(90deg);
+        }
+
+        /* Hamburger menu (responsive navigation) */
+        .hamburger {
+            display: none;
+            flex-direction: column;
+            cursor: pointer;
+            gap: 6px;
+        }
+        .bar {
+            width: 25px;
+            height: 3px;
+            background-color: #333;
+            border-radius: 3px;
+        }
+        @media (max-width: 768px) {
+            .navbar {
+                flex-wrap: wrap;
+            }
+            .nav-links {
+                position: absolute;
+                top: 60px;
+                right: 0;
+                background: #f8f9fa;
+                flex-direction: column;
+                width: 220px;
+                gap: 0;
+                box-shadow: 0 2px 8px rgba(0,0,0,0.14);
+                transform: translateX(100%);
+                transition: transform 0.3s;
+                z-index: 99;
+                border-radius: 0 0 0 10px;
+            }
+            .nav-links.mobile-active {
+                transform: translateX(0);
+            }
+            .nav-links a {
+                padding: 18px 28px;
+                border-bottom: 1px solid #e9ecef;
+            }
+            .hamburger {
+                display: flex;
+                margin-left: 15px;
+            }
+            .btn {
+                padding: 10px 16px;
+                font-size: 1em;
+                margin-top: 10px;
+            }
+        }
+
+        /* Modal styles */
+        .modal-bg {
+            position: fixed;
+            top:0; left: 0; right:0; bottom:0;
+            background: rgba(0,0,0,0.6);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 999;
+        }
+        .modal-bg.active {
+            display: flex;
+        }
+        .modal-content {
+            background: #fff;
+            padding: 35px 30px;
+            border-radius: 8px;
+            width: 95%;
+            max-width: 380px;
+            box-shadow: 0 2px 12px rgba(0,0,0,0.14);
+            position: relative;
+        }
+        .modal-close {
+            position: absolute;
+            top: 14px;
+            right: 14px;
+            font-size: 1.4em;
+            background: none;
+            border: none;
+            cursor: pointer;
+            color: #333;
+        }
+        .modal-content h2 {
+            margin-top: 0;
+            margin-bottom: 15px;
+            font-size: 1.3em;
+        }
+        .modal-content input, .modal-content button {
+            width: 100%;
+            margin-bottom: 15px;
+            padding: 10px;
+            border-radius: 4px;
+            border: 1px solid #e2e2e2;
+        }
+        .modal-content input:focus {
+            outline: 2px solid #007bff;
+        }
+        .modal-content button {
+            background: #007bff;
+            color: #fff;
+            border: none;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        footer {
+            background: #333;
+            color: white;
+            padding: 40px 0;
+            text-align: center;
+        }
+        .footer-links a {
+            color: #fff;
+            text-decoration: underline;
+            margin: 0 6px;
+            font-size: 0.97em;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="container">
+            <nav class="navbar">
+                <div class="logo"><a href="/" aria-label="Video Cleaner Pro Home">Video Cleaner Pro</a></div>
+                <div class="hamburger" id="hamburger-menu" aria-label="Open main menu" tabindex="0">
+                    <span class="bar"></span>
+                    <span class="bar"></span>
+                    <span class="bar"></span>
+                </div>
+                <div class="nav-links" id="nav-links">
+                    <a href="#features">Features</a>
+                    <a href="#how-it-works">How It Works</a>
+                    <a href="#pricing">Pricing</a>
+                    <a href="#faq">FAQ</a>
+                </div>
+                <button class="btn" id="get-started-btn">Get Started</button>
+            </nav>
+        </div>
+    </header>
+
+    <section class="hero">
+        <div class="container">
+            <h1>Remove Watermarks, Emojis & Captions from Videos</h1>
+            <p>Professional video cleaning tool with AI-powered removal technology. Perfect for content creators, marketers, and video professionals.</p>
+            <button class="btn" id="start-trial-btn">Start Free Trial</button>
+        </div>
+    </section>
+
+    <section id="features" class="features">
+        <div class="container">
+            <h2>Powerful Features</h2>
+            <div class="feature-grid">
+                <div class="feature-item">
+                    <h3>AI-Powered Removal</h3>
+                    <p>Advanced AI technology detects and removes watermarks, logos, and text without leaving traces.</p>
+                </div>
+                <div class="feature-item">
+                    <h3>Batch Processing</h3>
+                    <p>Process multiple videos at once to save time and streamline your workflow.</p>
+                </div>
+                <div class="feature-item">
+                    <h3>High Quality Output</h3>
+                    <p>Maintain original video quality with our intelligent processing algorithms.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="how-it-works" class="features">
+        <div class="container">
+            <h2>How It Works</h2>
+            <div class="steps">
+                <div class="step">
+                    <div class="step-number">1</div>
+                    <div>Upload video files securely using our platform.</div>
+                </div>
+                <div class="step">
+                    <div class="step-number">2</div>
+                    <div>Mark areas containing watermarks, emojis, or captions.</div>
+                </div>
+                <div class="step">
+                    <div class="step-number">3</div>
+                    <div>Click <strong>Clean Video</strong>. AI removes all selected marks.</div>
+                </div>
+                <div class="step">
+                    <div class="step-number">4</div>
+                    <div>Download your high-quality, cleaned video!</div>
+                </div>
+            </div>
+            <div style="margin: 30px auto;text-align:center;">
+                <video width="420" controls poster="https://dummyimage.com/420x230/007bff/fff&text=Demo+Video">
+                    <source src="demo.mp4" type="video/mp4">
+                    Your browser does not support the video tag.
+                </video>
+                <p style="margin-top:10px;">Watch quick demo</p>
+            </div>
+        </div>
+    </section>
+
+    <section id="pricing" class="pricing">
+        <div class="container">
+            <h2>Choose Your Plan</h2>
+            <div class="pricing-grid">
+                <div class="pricing-item">
+                    <h3>Basic</h3>
+                    <p class="price">$9/month</p>
+                    <ul>
+                        <li>Up to 10 videos per month</li>
+                        <li>1080p output</li>
+                        <li>Basic watermark removal</li>
+                        <li>Email support</li>
+                    </ul>
+                    <button class="btn plan-btn">Get Started</button>
+                </div>
+                <div class="pricing-item">
+                    <h3>Pro</h3>
+                    <p class="price">$19/month</p>
+                    <ul>
+                        <li>Unlimited videos</li>
+                        <li>4K output</li>
+                        <li>Advanced removal tools</li>
+                        <li>Priority support</li>
+                    </ul>
+                    <button class="btn plan-btn">Get Started</button>
+                </div>
+                <div class="pricing-item">
+                    <h3>Enterprise</h3>
+                    <p class="price">$49/month</p>
+                    <ul>
+                        <li>Unlimited everything</li>
+                        <li>Batch processing</li>
+                        <li>Custom integration</li>
+                        <li>24/7 dedicated support</li>
+                    </ul>
+                    <button class="btn plan-btn">Get Started</button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="faq" class="features">
+        <div class="container">
+            <h2>Frequently Asked Questions</h2>
+            <div class="faq-list">
+                <div class="faq-item">
+                    <button class="faq-question" aria-expanded="false">
+                        Is my data safe?
+                        <span class="faq-chevron">›</span>
+                    </button>
+                    <div class="faq-answer">
+                        We process videos securely and do not retain your files after cleaning.
+                    </div>
+                </div>
+                <div class="faq-item">
+                    <button class="faq-question" aria-expanded="false">
+                        Will the output have quality loss?
+                        <span class="faq-chevron">›</span>
+                    </button>
+                    <div class="faq-answer">
+                        No, our intelligent algorithms maintain optimal video quality.
+                    </div>
+                </div>
+                <div class="faq-item">
+                    <button class="faq-question" aria-expanded="false">
+                        Do I need to install anything?
+                        <span class="faq-chevron">›</span>
+                    </button>
+                    <div class="faq-answer">
+                        No installation required; everything runs securely in your browser.
+                    </div>
+                </div>
+                <div class="faq-item">
+                    <button class="faq-question" aria-expanded="false">
+                        What formats are supported?
+                        <span class="faq-chevron">›</span>
+                    </button>
+                    <div class="faq-answer">
+                        We support all major video formats, including MP4, MOV, and AVI.
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Modal for 'Get Started' / Free Trial -->
+    <div class="modal-bg" id="modal-bg" aria-modal="true">
+        <div class="modal-content" role="dialog" aria-labelledby="modal-title">
+            <button class="modal-close" id="modal-close-btn" aria-label="Close">&times;</button>
+            <h2 id="modal-title">Sign up to Get Started</h2>
+            <form id="signup-form" autocomplete="off">
+                <input type="email" required placeholder="Email address">
+                <input type="password" required minlength="6" placeholder="Password">
+                <button type="submit">Create account</button>
+            </form>
+            <div id="signup-success" style="display:none; color:green;">Thank you! We’ll send setup details to your inbox.</div>
+        </div>
+    </div>
+
+    <footer>
+        <div class="container">
+            <h3>Video Cleaner Pro</h3>
+            <div class="footer-links">
+                <a href="#">Privacy Policy</a> | 
+                <a href="#">Terms of Service</a> | 
+                <a href="#">Contact Us</a>
+            </div>
+            <p>&copy; 2023 Video Cleaner Pro. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script>
+    // Hamburger menu interactivity
+    const hamburger = document.getElementById('hamburger-menu');
+    const navLinks = document.getElementById('nav-links');
+
+    function toggleMenu() {
+        navLinks.classList.toggle('mobile-active');
+    }
+
+    hamburger.addEventListener('click', toggleMenu);
+    hamburger.addEventListener('keypress', function(e) { if(e.key === "Enter")toggleMenu(); });
+
+    // Close nav menu on link click (mobile)
+    navLinks.querySelectorAll('a').forEach(link => {
+        link.addEventListener('click', () => {
+            navLinks.classList.remove('mobile-active');
+        });
+    });
+
+    // FAQ accordion interactivity
+    document.querySelectorAll('.faq-question').forEach(btn => {
+        btn.addEventListener('click', function() {
+            const item = btn.parentElement;
+            const expanded = item.classList.contains('active');
+            document.querySelectorAll('.faq-item').forEach(i => {
+                i.classList.remove('active');
+                i.querySelector('.faq-question').setAttribute('aria-expanded', 'false');
+            });
+            if (!expanded) {
+                item.classList.add('active');
+                btn.setAttribute('aria-expanded', 'true');
+            }
+        });
+    });
+
+    // Modal interactivity
+    const modalBg = document.getElementById('modal-bg');
+    const getStartedBtns = [document.getElementById('get-started-btn'), ...document.querySelectorAll('.plan-btn, #start-trial-btn')];
+    const closeBtn = document.getElementById('modal-close-btn');
+    getStartedBtns.forEach(btn => {
+        btn.addEventListener('click', () => {
+            modalBg.classList.add('active');
+            document.getElementById('signup-success').style.display = 'none';
+            document.getElementById('signup-form').style.display = '';
+        });
+    });
+    closeBtn.addEventListener('click', () => {
+        modalBg.classList.remove('active');
+    });
+    modalBg.addEventListener('click', (e) => {
+        if (e.target === modalBg) {
+            modalBg.classList.remove('active');
+        }
+    });
+
+    // Signup form fake submit
+    document.getElementById('signup-form').addEventListener('submit', function(e){
+        e.preventDefault();
+        this.style.display = 'none';
+        document.getElementById('signup-success').style.display = 'block';
+    });
+    </script>
+</body>
+</html>
